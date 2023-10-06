@@ -1,0 +1,58 @@
+﻿@inject CustomersAndProductsDataService PeopleAndProductsDS
+
+<button @onclick="OnCustomers">顧客データ</button>
+<button @onclick="OnProducts">製品データ</button>
+
+<div class="grid_wrapper">
+    <IgbGrid Height="400px" @key="Counter"
+             DisplayDensity="DisplayDensity.Compact"
+             Data="@GridDataSource"
+             AutoGenerate="false">
+        @if (GridColumnConfigurations != null)
+        {
+            @foreach (var columnConfig in GridColumnConfigurations)
+            {
+                <IgbColumn Field="@columnConfig.PropertyName" Header="@columnConfig.DisplayText" />
+            }
+        }
+    </IgbGrid>
+</div>
+
+@code {
+    private object[]? GridDataSource = null;
+    private ColumnConfiguration[]? GridColumnConfigurations = null;
+
+    private int Counter = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Customersのデータと列情報を取得し、IgbGridのデータとして設定する。
+        (GridDataSource, GridColumnConfigurations) = await PeopleAndProductsDS.GetCustomersAndConfigurationsAsync();
+
+        // IgbGridにBlazorの@key属性のディレクティブを追加し、
+        // その値であるCounterの値をインクリメントすることで、
+        // Blazorフレームワークに再描画を促す。
+        // https://learn.microsoft.com/ja-jp/aspnet/core/blazor/components/element-component-model-relationships?view=aspnetcore-7.0
+        Counter++;
+    }
+
+    private async Task OnCustomers()
+    {
+        // OnInitializedAsyncと同様
+
+        // Customersのデータと列情報を取得し、IgbGridのデータとして設定する。
+        (GridDataSource, GridColumnConfigurations) = await PeopleAndProductsDS.GetCustomersAndConfigurationsAsync();
+
+        Counter++;
+    }
+
+    private async Task OnProducts()
+    {
+        // OnInitializedAsyncと同様
+
+        // Productのデータと列情報を取得し、IgbGridのデータとして設定する。
+        (GridDataSource, GridColumnConfigurations) = await PeopleAndProductsDS.GetProductsAndConfigurationsAsync();
+
+        Counter++;
+    }
+}
